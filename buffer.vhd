@@ -5,10 +5,10 @@ use ieee.std_logic_unsigned.all;
 entity buffer_r is 
 	generic ( w: natural := 8);
 	
-	port ( input:  in  bit_vector (w-1 downto 0); --entrada
+	port ( input:  in  std_logic_vector (w-1 downto 0); --entrada
 	       action: in  bit; -- 1 - leitura, 0 - escrita
 	       clk:    in  bit; --clock
-	       output: out bit_vector (w-1 downto 0)  --saída 
+	       output: out std_logic_vector (w-1 downto 0)  --saída 
 	      );
 end buffer_r;
 
@@ -23,19 +23,24 @@ begin
 	process (clk)
 	variable wr_ptr: natural;
 	variable rd_ptr: natural;
-	wr_ptr := 0;
-	rd_ptr := 0;
-	begin
-	    if ( clk'EVENT AND clk='1' ) then  
-	    	if ( action = '1') then 	
-			output <= mem(rd_ptr);
-			rd_ptr
-		elsif ( action = '1' 
-		end if;
-	end if;	
-	end process;
-
-
 	
+	begin
+	
+	    if ( clk'EVENT AND clk='1' ) then  
+	    	if ( action = '1' ) then 	
+			if (mem(rd_ptr) = "UUUUUUUU") then
+			    output <= "UUUUUUUU";
+			else 
+			    output <= mem(rd_ptr);
+			    mem(rd_ptr) <= "UUUUUUUU";
+			    rd_ptr := (rd_ptr+1) rem 4;
+			end if;
+		elsif ( action = '0' and (mem(wr_ptr) = "UUUUUUUU") ) then
+			mem(wr_ptr) <= input;
+			wr_ptr := (wr_ptr+1) rem 4;
+		        	
+		end if;
+	     end if;	
+	end process;
 
 end arch_buffer;
