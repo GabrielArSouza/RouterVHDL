@@ -7,7 +7,7 @@ entity arbitro is
 
 	port ( clk:                in  bit;  -- clock
 	       in1, in2, in3, in4: in  std_logic_vector  (w-1 downto 0); -- entrada de dados
-	       write_b:            in  bit_vector( 1 downto 0 );  -- escrever no buffer 
+	       write_b:            in  std_logic_vector( 1 downto 0 );  -- escrever no buffer 
 	       output:             out std_logic_vector (w-1 downto 0)); --mesma saída do MUX
 end arbitro;
 
@@ -30,7 +30,7 @@ architecture arch_arb of arbitro is
 	end component;
 
 	-- s0 = 1 and s1 = 0 -> libera a primeira entrada do MUX (a0 norte)
-	-- s1 = 1 and s0 = 0 -> libera a segunda entrada do MUX (a1 sul)
+	-- s0 = 0 and s1 = 1 -> libera a segunda entrada do MUX (a1 sul)
 	-- s0 and s1 = 0 -> libera a terceira entrada do MUX (a2 leste)
 	-- s0 and s1 = 1 -> libera a quarta entrada do MUX (a3 oeste)
 	

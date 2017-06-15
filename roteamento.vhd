@@ -7,7 +7,7 @@ entity router_logic is
 	
 	port ( input:  in  std_logic_vector (w-1 downto 0); --entrada = primeiro pacote do buffer
 	       clk:    in  bit; --clock
-	       output: out std_logic_vector (1 downto 0)  --saÃ­da 
+	       output: out std_logic_vector (1 downto 0)  --saída 
 	      );
 end router_logic;
 
@@ -23,7 +23,7 @@ begin
 	    	if ( input(w-1 downto 4) /= "0000" ) then
 		    -- x > 0  
 		    if( input(w-1) = '0') then
-			output <= "10"; --set Leste do buffer do arbitro
+			output <= "00"; --set Leste do buffer do arbitro
 		    -- x < 0
 		    else
 			output <= "11"; --set Oeste do buffer do arbitro
@@ -34,7 +34,7 @@ begin
 			output <= "01"; --set Sul do buffer do arbitro
 		    --y < 0
 		    else
-			output <= "00"; --set Norte do buffer do arbitro
+			output <= "10"; --set Norte do buffer do arbitro
 		    end if;
 		end if;
 	     end if;	
