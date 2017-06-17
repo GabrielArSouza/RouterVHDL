@@ -14,7 +14,7 @@ end arbitro;
 architecture arch_arb of arbitro is
 	type memory is array(0 to 3) of bit;
 	signal buffer_arb : memory; -- memória
-	signal ctrl_1, ctrl_2: bit; -- sinal controlador para o mux
+	signal ctrl_1, ctrl_2: std_logic; -- sinal controlador para o mux
 	
 	-- pos = 0 -> Dado da entrada norte espera para sair
 	-- pos = 1 -> Dado da entrada sul espera para sair
@@ -25,7 +25,7 @@ architecture arch_arb of arbitro is
  
 		port(
 		a0, a1, a2, a3 : in  std_logic_vector  (w-1 downto 0); -- entrada de dados
-	   	s0, s1         : in  bit;       		       -- seletores
+	   	s0, s1         : in  std_logic;       		       -- seletores
 	   	s              : out std_logic_vector (w-1 downto 0)); -- saida
 	end component;
 
@@ -37,7 +37,6 @@ architecture arch_arb of arbitro is
 begin
 	process(clk)
 	variable ptr_rd: natural;
-		
 	begin
 		if ( clk'EVENT AND clk='1' ) then
 			-- escreve no buffer
@@ -56,10 +55,9 @@ begin
 			elsif ((write_b = "11") and (buffer_arb(3) = '0')) then
 			    buffer_arb(3) <= '1';
 			end if;
-
-			-- sai o norte
+			
 			if ( (ptr_rd = 0) and (buffer_arb(ptr_rd) = '1') ) then
-				ctrl_1 <= '1';
+				ctrl_1 <= '0';
 				ctrl_2 <= '0';
 				buffer_arb(ptr_rd) <= '0';
 			-- sai o sul
@@ -69,7 +67,7 @@ begin
 				buffer_arb(ptr_rd) <= '0';
 			-- sai o leste
 			elsif ( (ptr_rd = 2) and (buffer_arb(ptr_rd) = '1')) then
-				ctrl_1 <= '0';
+				ctrl_1 <= '1';
 				ctrl_2 <= '0';
 				buffer_arb(ptr_rd) <= '0';
 			-- sai o oeste
@@ -77,7 +75,11 @@ begin
 				ctrl_1 <= '1';
 				ctrl_2 <= '1';
 				buffer_arb(ptr_rd) <= '0';
+			else
+				ctrl_1 <= 'U';
+				ctrl_2 <= 'U';
 			end if;
+
 			ptr_rd := (ptr_rd+1) rem 4;
 		end if;
 		
